@@ -1,0 +1,20 @@
+<h1>Reserva de {{booking.clientName}}</h1>
+<p>Email: {{booking.clientEmail}}</p>
+<p>Fecha: {{booking.date}}</p>
+<p>Hora: {{booking.time}}</p>
+<p>Estado: {{booking.status}}</p>
+
+<h2>Servicios asignados</h2>
+{{#each booking.services}}
+  {{#if this.service}}
+    <article>
+      <h3>{{this.service.name}}</h3>
+      <p>Duración: {{this.service.duration}} minutos</p>
+      <p>Precio: ${{this.service.price}}</p>
+      <p>Categoría: {{this.service.category}}</p>
+      <p>Cantidad: {{this.quantity}}</p>
+    </article>
+  {{/if}}
+{{else}}
+  <p>Esta reserva aún no posee servicios registrados.</p>
+{{/each}}

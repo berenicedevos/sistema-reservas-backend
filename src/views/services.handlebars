@@ -1,0 +1,14 @@
+<h1>{{title}}</h1>
+
+{{#each services}}
+  <article>
+    <h2>{{name}}</h2>
+    <p>{{description}}</p>
+    <p>Duración: {{duration}} minutos</p>
+    <p>Precio: ${{price}}</p>
+    <p>Categoría: {{category}}</p>
+    <p>Disponible: {{#if available}}Sí{{else}}No{{/if}}</p>
+  </article>
+{{else}}
+  <p>No hay servicios cargados.</p>
+{{/each}}

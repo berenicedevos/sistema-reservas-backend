@@ -1,0 +1,71 @@
+<h1>{{title}}</h1>
+<p>Esta lista se actualiza sola cuando se crea, modifica o elimina un servicio.</p>
+
+<h2>Crear servicio</h2>
+<form id="service-form">
+  <input type="text" name="name" placeholder="Nombre" required />
+  <input type="text" name="description" placeholder="Descripción" required />
+  <input type="number" name="duration" placeholder="Duración (min)" required />
+  <input type="number" name="price" placeholder="Precio" required />
+  <input type="text" name="category" placeholder="Categoría" required />
+  <button type="submit">Crear</button>
+</form>
+<p id="message"></p>
+
+<h2>Servicios</h2>
+<ul id="services-list">
+  {{#each services}}
+    <li>
+      {{name}} - ${{price}} - {{duration}} min - {{category}} -
+      {{#if available}}Disponible{{else}}No disponible{{/if}}
+    </li>
+  {{/each}}
+</ul>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  const list = document.getElementById('services-list');
+  const form = document.getElementById('service-form');
+  const message = document.getElementById('message');
+
+  socket.on('servicesUpdated', (services) => {
+    list.innerHTML = '';
+
+    services.forEach((service) => {
+      const li = document.createElement('li');
+      const state = service.available ? 'Disponible' : 'No disponible';
+      li.textContent = `${service.name} - $${service.price} - ${service.duration} min - ${service.category} - ${state}`;
+      list.appendChild(li);
+    });
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      description: formData.get('description'),
+      duration: Number(formData.get('duration')),
+      price: Number(formData.get('price')),
+      category: formData.get('category')
+    };
+
+    const response = await fetch('/api/services', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      message.textContent = result.message;
+      return;
+    }
+
+    message.textContent = 'Servicio creado correctamente';
+    form.reset();
+  });
+</script>

@@ -1,4 +1,4 @@
-import { BookingModel } from './models/booking.model.js';
+import { BookingModel } from '../models/booking.model.js';
 
 export class BookingsMongoDAO {
   async getAll() {
